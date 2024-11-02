@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:testimn/benefits/upokar.dart';
 import 'package:testimn/bmi_calculation/bmi.dart';
-import 'package:testimn/creator.dart';
+import 'package:testimn/Starting/creator.dart';
+import 'package:testimn/branch.dart';
 import 'package:testimn/firebase_options.dart';
 import 'package:testimn/fosolerJat/fosoler_jat.dart';
 import 'package:testimn/fosolerRog/fosoler_rog.dart';
 import 'package:testimn/fungicide/chotraknashok.dart';
-import 'package:testimn/home_page.dart';
+import 'package:testimn/news.dart';
+import 'package:testimn/openingTime/home_page.dart';
 import 'package:testimn/newProduct/ProductGridPage.dart';
 import 'package:testimn/newProduct/addProduct.dart';
 import 'package:testimn/ponno/ponno.dart';
 import 'package:testimn/posting/post.dart';
+import 'package:testimn/Starting/profile.dart';
+import 'package:testimn/privacy.dart';
 import 'package:testimn/sobjiCash/cas.dart';
 import 'package:testimn/zakat/zakat_info_page.dart';
 import 'instruction_page.dart'; // Adjust the import path as needed
@@ -25,10 +29,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(MyApp5());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp5 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -52,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     HomeScreen(),
     MyApp_post(),
-    CreatorPage(),
+    MyAppCr(),
   ];
 
   @override
@@ -106,36 +110,42 @@ class _HomePageState extends State<HomePage> {
             // Replace UserAccountsDrawerHeader with a simple header or any other widget
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.greenAccent,
+                color: const Color.fromARGB(255, 206, 194, 155),
               ),
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  'Welcome!',
+                  '🌿Welcome💐  🌼MyUser ❤️',
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
+                    color: const Color.fromARGB(255, 186, 19, 19),
+                    fontSize: 33,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 30.0,
+                        color: const Color.fromARGB(255, 34, 18, 210)
+                            .withOpacity(0.8),
+                        offset: Offset(8.0, 8.0),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.home_max, color: Colors.orange),
-              title: const Text('Create Profile'),
+              title: const Text('My Profile'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UserProfilePage(
-                            initialUsername: '',
-                            initialEmail: '',
-                          )), // Navigate to the UserProfilePage
+                      builder: (context) =>
+                          UserProfilePage()), // Navigate to the UserProfilePage
                 );
               },
             ),
             ListTile(
               leading: Icon(Icons.info, color: Colors.blue),
-              title: Text('About Me'),
+              title: Text('About Creator'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -174,10 +184,27 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.lock, color: Colors.orange),
+              title: const Text('Privacy Policy'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyAppPrivacy()),
+                );
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.share, color: Colors.purple),
               title: Text('Share'),
               onTap: () {
                 _shareApp(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.purple),
+              title: Text('Log Out'),
+              onTap: () {
+                //sdffdd
               },
             ),
           ],
@@ -194,9 +221,13 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.info),
             label: 'Post',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Creator',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Creator',
+            label: 'Branch',
           ),
         ],
         currentIndex: _currentIndex,
@@ -208,105 +239,6 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
-  }
-}
-
-// Update UserProfilePage to accept initial values
-class UserProfilePage extends StatefulWidget {
-  final String initialUsername;
-  final String initialEmail;
-
-  UserProfilePage({required this.initialUsername, required this.initialEmail});
-
-  @override
-  _UserProfilePageState createState() => _UserProfilePageState();
-}
-
-class _UserProfilePageState extends State<UserProfilePage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _usernameController.text = widget.initialUsername; // Set initial username
-    _emailController.text = widget.initialEmail; // Set initial email
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Profile'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: _buildAvatar(),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _submitProfile,
-              child: Text('Submit'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAvatar() {
-    String initials = _getInitials(_usernameController.text);
-
-    return CircleAvatar(
-      radius: 50,
-      backgroundColor: Colors.green,
-      child: Text(
-        initials,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  String _getInitials(String name) {
-    if (name.isEmpty) {
-      return '';
-    }
-    List<String> parts = name.split(' ');
-    if (parts.length == 1) {
-      return parts[0][0].toUpperCase();
-    } else {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-  }
-
-  void _submitProfile() {
-    // Handle submission logic (e.g., save to database)
-    print('Username: ${_usernameController.text}');
-    print('Email: ${_emailController.text}');
   }
 }
 
@@ -404,6 +336,11 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MyAppgrid()),
+                );
+              } else if (topics[index]['name'] == 'news') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyAppnews()),
                 );
               } else {
                 Navigator.push(

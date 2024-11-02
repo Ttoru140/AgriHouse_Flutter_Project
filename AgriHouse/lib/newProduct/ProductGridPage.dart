@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:testimn/firebase_options.dart';
 
 void main() async {
@@ -20,6 +19,7 @@ class MyAppgrid extends StatelessWidget {
       title: 'Product Management',
       theme: ThemeData(
         primarySwatch: Colors.green,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: ProductGrid(),
     );
@@ -42,6 +42,7 @@ class _ProductFormState extends State<ProductForm> {
       await _addProductToFirestore(_imageUrlController.text);
       _showSnackBar('Product added successfully!');
       _clearForm();
+      Navigator.pop(context); // Close the form after saving
     } else {
       _showSnackBar('Please fill all fields');
     }
@@ -81,19 +82,36 @@ class _ProductFormState extends State<ProductForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Product'),
+        backgroundColor: Colors.green,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildTextField(_nameController, 'Name'),
-            _buildTextField(_detailsController, 'Details'),
-            _buildTextField(_priceController, 'Price', TextInputType.number),
-            _buildTextField(
-                _imageUrlController, 'Image URL', TextInputType.url),
-            const SizedBox(height: 20),
-            _buildSaveButton(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add a New Product',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(_nameController, 'Product Name'),
+              const SizedBox(height: 16),
+              _buildTextField(_detailsController, 'Product Details'),
+              const SizedBox(height: 16),
+              _buildTextField(
+                  _priceController, 'Product Price', TextInputType.number),
+              const SizedBox(height: 16),
+              _buildTextField(
+                  _imageUrlController, 'Image URL', TextInputType.url),
+              const SizedBox(height: 20),
+              _buildSaveButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -103,15 +121,32 @@ class _ProductFormState extends State<ProductForm> {
       [TextInputType keyboardType = TextInputType.text]) {
     return TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: 'Enter $label',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: Colors.green),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.green, width: 2.0),
+        ),
+      ),
       keyboardType: keyboardType,
     );
   }
 
   Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: _saveProduct,
-      child: const Text('Save Product'),
+    return Center(
+      child: ElevatedButton(
+        onPressed: _saveProduct,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          textStyle: TextStyle(fontSize: 18),
+        ),
+        child: const Text('Save Product'),
+      ),
     );
   }
 }
@@ -122,6 +157,7 @@ class ProductGrid extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Product List'),
+        backgroundColor: Colors.green,
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -160,13 +196,22 @@ class ProductGrid extends StatelessWidget {
               final product = products[index].data() as Map<String, dynamic>;
               return Card(
                 elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Image.network(
-                        product['image'],
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(10)),
+                        child: Image.network(
+                          product['image'],
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Center(child: Text('Image not available')),
+                        ),
                       ),
                     ),
                     Padding(
@@ -175,11 +220,22 @@ class ProductGrid extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product['name'],
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            'Name: ${product['name']}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                          Text('Price: \$${product['price'].toString()}'),
-                          Text(product['details']),
+                          SizedBox(height: 4),
+                          Text(
+                            'Price: \$${product['price'].toStringAsFixed(2)}',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Details: ${product['details']}',
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
                         ],
                       ),
                     ),

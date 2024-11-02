@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:testimn/home_page.dart';
+
+import '../Starting/tarik.dart';
+// import 'package:testimn/openingTime/home_page.dart';
 
 // import '../main.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyApp7());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp7 extends StatelessWidget {
+  const MyApp7({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +76,7 @@ class _SplashScreenPageState extends State<SplashScreenPage>
     // Navigate to the home page after 4 seconds
     Timer(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => MyApp5()),
       );
     });
   }

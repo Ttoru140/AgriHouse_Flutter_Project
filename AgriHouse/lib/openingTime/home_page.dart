@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:testimn/creator.dart';
+import 'package:testimn/Starting/creator.dart';
 // Adjust the import path as needed
 
 void main() {
-  runApp(MyApp());
+  runApp(MyApp7());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp7 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

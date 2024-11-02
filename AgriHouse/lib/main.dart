@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:testimn/firebase_options.dart';
+import 'package:testimn/openingTime/open.dart';
 
-import '../tarik.dart';
+// import '../main.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp2());
+  runApp(MyApp3());
 }
 
-class MyApp2 extends StatelessWidget {
+class MyApp3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,11 +53,7 @@ class _AuthCheckState extends State<AuthCheck> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoggedIn) {
-      return HomeScreen();
-    } else {
-      return AuthScreen();
-    }
+    return _isLoggedIn ? SplashScreenPage() : AuthScreen();
   }
 }
 
@@ -80,6 +78,9 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _authenticate() async {
+    final name = _nameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final district = _districtController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -93,13 +94,11 @@ class _AuthScreenState extends State<AuthScreen> {
 
         User? user = userCredential.user;
         if (user != null && user.emailVerified) {
-          // Set login state to true
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('isLoggedIn', true);
 
-          // Navigate to the home screen
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => MyApp()),
+            MaterialPageRoute(builder: (context) => SplashScreenPage()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -107,21 +106,43 @@ class _AuthScreenState extends State<AuthScreen> {
           );
         }
       } else {
-        // Signup
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+        // Check if the user already exists
+        final existingUser = await _auth.fetchSignInMethodsForEmail(email);
+        if (existingUser.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Account already exists. Please log in.')),
+          );
+        } else {
+          // Signup
+          UserCredential userCredential =
+              await _auth.createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
 
-        User? user = userCredential.user;
-        await user?.sendEmailVerification();
+          User? user = userCredential.user;
+          if (user != null) {
+            // Save additional user information to Firestore
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .set({
+              'uid': user.uid,
+              'name': name,
+              'phone': phone,
+              'district': district,
+              'email': email,
+            });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text('Verification email sent. Please check your inbox.')),
-        );
+            await user.sendEmailVerification();
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(
+                      'Verification email sent. Please check your inbox.')),
+            );
+          }
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -221,15 +242,6 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: MyApp()),
     );
   }
 }

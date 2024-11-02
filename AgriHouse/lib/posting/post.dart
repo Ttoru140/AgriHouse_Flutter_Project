@@ -1,7 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:testimn/firebase_options.dart';
 
 void main() async {
@@ -15,13 +15,15 @@ void main() async {
 class MyApp_post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Q&A Posting App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.grey[100],
+    return Directionality(
+      textDirection: TextDirection.ltr, // Set directionality here (ltr or rtl)
+      child: MaterialApp(
+        title: 'Q&A App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: PostPage(),
       ),
-      home: PostPage(),
     );
   }
 }
@@ -33,55 +35,42 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final TextEditingController _postController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _replyController = TextEditingController();
-  final TextEditingController _editController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String? _username;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(user.uid).get();
+
+      if (doc.exists) {
+        setState(() {
+          _username = doc['name'] ?? 'Anonymous';
+        });
+      }
+    }
+  }
 
   Future<void> _createPost() async {
     final postText = _postController.text.trim();
-    final username = _usernameController.text.trim();
-    if (postText.isNotEmpty && username.isNotEmpty) {
-      await FirebaseFirestore.instance.collection('posts').add({
+    if (postText.isNotEmpty && _username != null) {
+      await _firestore.collection('posts').add({
         'content': postText,
-        'username': username,
+        'username': _username,
         'timestamp': FieldValue.serverTimestamp(),
       });
       _postController.clear();
-      _usernameController.clear();
     }
-  }
-
-  Future<void> _replyToPost(String postId) async {
-    final replyText = _replyController.text.trim();
-    if (replyText.isNotEmpty) {
-      await FirebaseFirestore.instance
-          .collection('posts')
-          .doc(postId)
-          .collection('replies')
-          .add({
-        'content': replyText,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      _replyController.clear();
-    }
-  }
-
-  Future<void> _editPost(String postId) async {
-    final updatedText = _editController.text.trim();
-    if (updatedText.isNotEmpty) {
-      await FirebaseFirestore.instance.collection('posts').doc(postId).update({
-        'content': updatedText,
-      }).then((_) {
-        setState(() {
-          // Triggers a rebuild to reflect changes
-        });
-        // Navigator.of(context).pop(); // Close the dialog after updating
-      });
-    }
-  }
-
-  void _sharePost(String content) {
-    Share.share(content);
   }
 
   @override
@@ -118,38 +107,25 @@ class _PostPageState extends State<PostPage> {
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         children: [
-          TextField(
-            controller: _usernameController,
-            decoration: InputDecoration(
-              hintText: 'Enter your username',
-              border: InputBorder.none,
+          CircleAvatar(
+            backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=1'),
+            radius: 20,
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: _postController,
+              decoration: InputDecoration(
+                hintText: 'What\'s your question or post?',
+                border: InputBorder.none,
+              ),
             ),
           ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundImage:
-                    NetworkImage('https://i.pravatar.cc/150?img=1'),
-                radius: 20,
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: TextField(
-                  controller: _postController,
-                  decoration: InputDecoration(
-                    hintText: 'What\'s your question or post?',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.send, color: Colors.blue),
-                onPressed: _createPost,
-              ),
-            ],
+          IconButton(
+            icon: Icon(Icons.send, color: Colors.blue),
+            onPressed: _createPost,
           ),
         ],
       ),
@@ -158,7 +134,7 @@ class _PostPageState extends State<PostPage> {
 
   Widget _buildPostList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
+      stream: _firestore
           .collection('posts')
           .orderBy('timestamp', descending: true)
           .snapshots(),
@@ -174,15 +150,14 @@ class _PostPageState extends State<PostPage> {
           itemCount: posts.length,
           itemBuilder: (context, index) {
             final postData = posts[index];
-            final postId = postData.id;
-            return _buildPostCard(postData, postId);
+            return _buildPostCard(postData);
           },
         );
       },
     );
   }
 
-  Widget _buildPostCard(QueryDocumentSnapshot postData, String postId) {
+  Widget _buildPostCard(QueryDocumentSnapshot postData) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
       elevation: 3,
@@ -195,145 +170,20 @@ class _PostPageState extends State<PostPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              postData['username'] ?? 'Unknown User',
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              postData['username'] ?? 'Anonymous',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent),
             ),
             SizedBox(height: 5),
             Text(
               postData['content'] ?? 'No content available',
               style: TextStyle(fontSize: 18, color: Colors.black),
             ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () {
-                    _editController.text = postData['content'];
-                    _showEditDialog(postId);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.share, color: Colors.green),
-                  onPressed: () {
-                    _sharePost(postData['content']);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.reply, color: Colors.blue),
-                  onPressed: () {
-                    _showReplyInput(postId);
-                  },
-                ),
-              ],
-            ),
-            _buildReplyList(postId),
           ],
         ),
       ),
-    );
-  }
-
-  void _showReplyInput(String postId) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Reply to Post'),
-          content: TextField(
-            controller: _replyController,
-            decoration: InputDecoration(
-              hintText: 'Type your reply...',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _replyToPost(postId);
-                Navigator.of(context).pop();
-              },
-              child: Text('Send'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showEditDialog(String postId) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Edit Post'),
-          content: TextField(
-            controller: _editController,
-            decoration: InputDecoration(
-              hintText: 'Edit your post...',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _editPost(postId);
-                Navigator.of(context).pop();
-              },
-              child: Text('Save'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildReplyList(String postId) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('posts')
-          .doc(postId)
-          .collection('replies')
-          .orderBy('timestamp')
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return SizedBox.shrink();
-        }
-        final replies = snapshot.data!.docs;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: replies.map((replyDoc) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(Icons.reply, color: Colors.black54),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      replyDoc['content'] ?? '',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        );
-      },
     );
   }
 }

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    home: ZakatCalculationPage(),
+  ));
+}
+
 class ZakatCalculationPage extends StatefulWidget {
   const ZakatCalculationPage({super.key});
 
@@ -116,7 +122,7 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 ),
-                child: Text('যাকাত গণনা করুন'),
+                child: const Text('যাকাত গণনা করুন'),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -138,9 +144,10 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
               ),
               const SizedBox(height: 10),
               Container(
-                alignment: Alignment.centerRight,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+                alignment:
+                    Alignment.topRight, // Align the text to the top right
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 8), // Reduced vertical padding
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(8),
@@ -152,9 +159,10 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
               ),
               const SizedBox(height: 10),
               Container(
-                alignment: Alignment.centerRight,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+                alignment:
+                    Alignment.topRight, // Align the text to the top right
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 8), // Reduced vertical padding
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8),
@@ -165,11 +173,11 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
                       fontSize: 36, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               GridView.count(
                 crossAxisCount: screenWidth < 400 ? 3 : 4,
                 shrinkWrap: true,
-                childAspectRatio: 2,
+                childAspectRatio: 1,
                 padding: const EdgeInsets.all(8),
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
@@ -183,11 +191,11 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
                   _buildCalculatorButton('7'),
                   _buildCalculatorButton('8'),
                   _buildCalculatorButton('9'),
-                  _buildCalculatorButton('*'),
+                  _buildCalculatorButton('.'),
                   _buildCalculatorButton('/'),
                   _buildCalculatorButton('+'),
                   _buildCalculatorButton('0'),
-                  _buildCalculatorButton('.'),
+                  _buildCalculatorButton('*'),
                   _buildCalculatorButton('-'),
                   _buildCalculatorButton('C'),
                   _buildCalculatorButton('='),
@@ -253,7 +261,7 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: Text(label, style: TextStyle(fontSize: 24)),
+      child: Text(label, style: const TextStyle(fontSize: 24)),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:testimn/firebase_options.dart';
 
 void main() async {
@@ -20,6 +19,15 @@ class MyApp3 extends StatelessWidget {
       title: 'Add Product',
       theme: ThemeData(
         primarySwatch: Colors.green,
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.green, width: 2.0),
+          ),
+          labelStyle: TextStyle(color: Colors.green),
+        ),
       ),
       home: ProductForm(),
     );
@@ -84,16 +92,32 @@ class _ProductFormState extends State<ProductForm> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildTextField(_nameController, 'Name'),
-            _buildTextField(_detailsController, 'Details'),
-            _buildTextField(_priceController, 'Price', TextInputType.number),
-            _buildTextField(
-                _imageUrlController, 'Image URL', TextInputType.url),
-            const SizedBox(height: 20),
-            _buildSaveButton(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add a New Product',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(_nameController, 'Product Name'),
+              const SizedBox(height: 16),
+              _buildTextField(_detailsController, 'Product Details'),
+              const SizedBox(height: 16),
+              _buildTextField(
+                  _priceController, 'Product Price', TextInputType.number),
+              const SizedBox(height: 16),
+              _buildTextField(
+                  _imageUrlController, 'Image URL', TextInputType.url),
+              const SizedBox(height: 20),
+              _buildSaveButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -103,15 +127,28 @@ class _ProductFormState extends State<ProductForm> {
       [TextInputType keyboardType = TextInputType.text]) {
     return TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: 'Enter $label',
+        fillColor: Colors.white,
+        filled: true,
+      ),
       keyboardType: keyboardType,
+      style: TextStyle(fontSize: 16),
     );
   }
 
   Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: _saveProduct,
-      child: const Text('Save Product'),
+    return Center(
+      child: ElevatedButton(
+        onPressed: _saveProduct,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green, // Background color
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          textStyle: TextStyle(fontSize: 18),
+        ),
+        child: const Text('Save Product'),
+      ),
     );
   }
 }
