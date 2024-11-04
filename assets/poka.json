@@ -1,0 +1,143 @@
+{
+    "ফসলের_জাত": [
+      {
+        "ফসলের_নাম": "ধান",
+        "রোগের নাম": [
+          {
+            "নাম": "হলুদ মাথা মাজরা পোকা",
+            "লিঙ্ক": "http://example.com/yellow_head_moth"
+          },
+          {
+            "নাম": "পাতা মড়ানো পোকা",
+            "লিঙ্ক": "http://example.com/leaffolder"
+          },
+          {
+            "নাম": "বাদামী গাছ ফড়িং",
+            "লিঙ্ক": "http://example.com/brown_plant_hopper"
+          },
+          {
+            "নাম": "ধানের গল্মাছি",
+            "লিঙ্ক": "http://example.com/rice_stem_borer"
+          },
+          {
+            "নাম": "সবুজ পাতা ফড়িং",
+            "লিঙ্ক": "http://example.com/green_plant_hopper"
+          },
+          {
+            "নাম": "ধানের গান্ধী পকা",
+            "লিঙ্ক": "http://example.com/rice_gandhi_bug"
+          },
+          {
+            "নাম": "ধানের পাম্রী পোকা",
+            "লিঙ্ক": "http://example.com/rice_leaf_miner"
+          },
+          {
+            "নাম": "ধানের পাতা মাছি",
+            "লিঙ্ক": "http://example.com/rice_leaf_fly"
+          },
+          {
+            "নাম": "থানের থ্রিপ্স পোকা",
+            "লিঙ্ক": "http://example.com/thrips"
+          }
+        ]
+      },
+      {
+        "ফসলের_নাম": "গম",
+        "রোগের নাম": [
+          {
+            "নাম": "গমের মাজ্রা পোকা",
+            "লিঙ্ক": "http://example.com/wheat_stem_borer"
+          },
+          {
+            "নাম": "জমের জাব পোকা",
+            "লিঙ্ক": "http://example.com/jum_jab"
+          },
+          {
+            "নাম": "গমের স্টিং পোকা",
+            "লিঙ্ক": "http://example.com/wheat_sting"
+          }
+        ]
+      },
+      {
+        "ফসলের_নাম": "ভুট্টা",
+        "রোগের নাম": [
+          {
+            "নাম": "ভুট্টার ফল আর্মি ওয়ারম",
+            "লিঙ্ক": "http://example.com/corn_army_worm"
+          },
+          {
+            "নাম": "জাবপোকা",
+            "লিঙ্ক": "http://example.com/jab_poka"
+          },
+          {
+            "নাম": "পাতা মড়ানো পকা",
+            "লিঙ্ক": "http://example.com/leaffolder_corn"
+          },
+          {
+            "নাম": "মাজ্রা পোকা",
+            "লিঙ্ক": "http://example.com/corn_stem_borer"
+          },
+          {
+            "নাম": "টমেটো সাদা মাছি",
+            "লিঙ্ক": "http://example.com/tomato_white_fly"
+          },
+          {
+            "নাম": "ফল ছিদ্রকারী",
+            "লিঙ্ক": "http://example.com/fruit_borer"
+          },
+          {
+            "নাম": "পাতা সুরুংকারী",
+            "লিঙ্ক": "http://example.com/leaf_cutter"
+          }
+        ]
+      },
+      {
+        "ফসলের_নাম": "আলু",
+        "রোগের নাম": [
+          {
+            "নাম": "আলুর জাব পোকা",
+            "লিঙ্ক": "http://example.com/potato_borer"
+          },
+          {
+            "নাম": "আলুর কাটুই পোকা",
+            "লিঙ্ক": "http://example.com/potato_cutworm"
+          },
+          {
+            "নাম": "আলুর সুরুঙ্গোপোকা",
+            "লিঙ্ক": "http://example.com/potato_wireworm"
+          },
+          {
+            "নাম": "ফ্লি বিটল",
+            "লিঙ্ক": "http://example.com/flea_beetle"
+          }
+        ]
+      },
+      {
+        "ফসলের_নাম": "পাট",
+        "রোগের নাম": [
+          {
+            "নাম": "পাতার খোঁজে দম",
+            "লিঙ্ক": "http://example.com/pat_leaf"
+          },
+          {
+            "নাম": "পাতার বাদামী ছিদ্র",
+            "লিঙ্ক": "http://example.com/pat_brown_spot"
+          }
+        ]
+      },
+      {
+        "ফসলের_নাম": "টমেটো",
+        "রোগের নাম": [
+          {
+            "নাম": "টমেটো লেট ব্লাইট",
+            "লিঙ্ক": "http://example.com/tomato_late_blight"
+          },
+          {
+            "নাম": "টমেটো ভাইরাস",
+            "লিঙ্ক": "http://example.com/tomato_virus"
+          }
+        ]
+      }
+    ]
+  }
+  
