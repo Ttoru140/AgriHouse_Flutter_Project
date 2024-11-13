@@ -15,19 +15,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: CropListPage(),
+      home: CropList(),
     );
   }
 }
 
-class CropListPage extends StatefulWidget {
-  const CropListPage({super.key});
+class CropList extends StatefulWidget {
+  const CropList({super.key});
 
   @override
   _CropListPageState createState() => _CropListPageState();
 }
 
-class _CropListPageState extends State<CropListPage> {
+class _CropListPageState extends State<CropList> {
   List<dynamic> cropList = [];
   List<dynamic> filteredList = [];
   final ApiController apiController = ApiController();

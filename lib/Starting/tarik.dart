@@ -1,27 +1,31 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:testimn/UserControl/main.dart';
 import 'package:testimn/benefits/upokar.dart';
 import 'package:testimn/bmi_calculation/bmi.dart';
 import 'package:testimn/Starting/creator.dart';
-import 'package:testimn/branch.dart';
+import 'package:testimn/fosolerJat/jat.dart';
+import 'package:testimn/newProduct/main.dart';
+// import 'package:testimn/s_additional/branch.dart';
 import 'package:testimn/firebase_options.dart';
-import 'package:testimn/fosolerJat/fosoler_jat.dart';
+// import 'package:testimn/fosolerJat/fosoler_jat.dart';
 import 'package:testimn/fosolerRog/fosoler_rog.dart';
 import 'package:testimn/fungicide/chotraknashok.dart';
 import 'package:testimn/login/login.dart';
-import 'package:testimn/news.dart';
+import 'package:testimn/s_additional/branchmain.dart';
+import 'package:testimn/s_additional/news.dart';
 import 'package:testimn/openingTime/home_page.dart';
-import 'package:testimn/newProduct/ProductGridPage.dart';
+// import 'package:testimn/newProduct/ProductGridPage.dart';
 import 'package:testimn/newProduct/addProduct.dart';
 import 'package:testimn/ponno/ponno.dart';
 import 'package:testimn/posting/post.dart';
 import 'package:testimn/Starting/profile.dart';
-import 'package:testimn/privacy.dart';
+import 'package:testimn/s_additional/privacy.dart';
+import 'package:testimn/purefood/main.dart';
 import 'package:testimn/sobjiCash/sobjiCash.dart';
 import 'package:testimn/zakat/zakat_info_page.dart';
 import 'instruction_page.dart'; // Adjust the import path as needed
-import 'package:testimn/fosolerPokamakor/poka.dart';
 
 // Import the new PokaPage
 
@@ -56,8 +60,8 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     HomeScreen(),
-    MyApp_post(),
-    MyAppCr(),
+    PostPage(),
+    HomePagebranch(),
   ];
 
   @override
@@ -155,6 +159,16 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.control_camera, color: Colors.orange),
+              title: const Text('Control Pannel'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PasswordCheckPage()),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.add,
                   color: Color.fromARGB(255, 0, 149, 255)),
               title: const Text('Add Product'),
@@ -207,7 +221,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyApp3()),
+                  MaterialPageRoute(builder: (context) => AuthCheck()),
                 );
               },
             ),
@@ -235,7 +249,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _currentIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: const Color.fromARGB(255, 8, 229, 15),
         onTap: (index) {
           setState(() {
             _currentIndex = index;
@@ -255,22 +269,18 @@ void _shareApp(BuildContext context) {
 
 class HomeScreen extends StatelessWidget {
   final List<Map<String, String>> topics = [
-    {'emoji': '🌾', 'name': 'ফসলের জাত', 'image': 'assets/image/jat.jpg'},
-    {'emoji': '🌱', 'name': 'ফসলের রোগ', 'image': 'assets/image/poka.jpg'},
-    {'emoji': '🐛', 'name': 'ফসলের পোকামাকড়', 'image': 'assets/image/poka.jpg'},
-    {'emoji': '🧪', 'name': 'ফসল ', 'image': 'assets/image/tech.jpg'},
-    {'emoji': '🍄', 'name': 'ছত্রাক নাশক', 'image': 'assets/image/poka.jpg'},
-    {'emoji': '💪', 'name': 'উপকারিতা', 'image': 'assets/image/zakat.jpg'},
-    {
-      'emoji': '📦',
-      'name': 'পণ্য ও প্রযুক্তি',
-      'image': 'assets/image/tech.jpg'
-    },
-    {'emoji': '💰', 'name': 'যাকাত', 'image': 'assets/image/zakat.jpg'},
-    {'emoji': '🏃‍♀️', 'name': 'BMI', 'image': 'assets/image/bmi.jpg'},
-    {'emoji': '🏃‍♀️', 'name': 'news', 'image': 'assets/image/bmi.jpg'},
-    {'emoji': '🏃🫛', 'name': 'সবজি চাষ', 'image': 'assets/image/tech.jpg'},
-    {'emoji': '🏃🫛', 'name': 'Weather', 'image': 'assets/image/tech.jpg'},
+    {'emoji': '🌾', 'name': 'ফসলের জাত'},
+    {'emoji': '🌱', 'name': 'ফসলের রোগ'},
+    {'emoji': '💦', 'name': 'খনিজ'},
+    {'emoji': '🪴', 'name': 'ফসল '},
+    {'emoji': '🍄', 'name': 'ছত্রাক নাশক'},
+    {'emoji': '💪', 'name': 'উপকারিতা'},
+    {'emoji': '📦', 'name': 'পণ্য ও প্রযুক্তি'},
+    {'emoji': '💰', 'name': 'যাকাত'},
+    {'emoji': '🏃‍♀️', 'name': 'BMI'},
+    {'emoji': '📰', 'name': 'news'},
+    {'emoji': '🫛', 'name': 'সবজি চাষ'},
+    {'emoji': '☁️', 'name': 'Weather'},
   ];
 
   @override
@@ -280,7 +290,7 @@ class HomeScreen extends StatelessWidget {
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.6,
+          childAspectRatio: 0.8, // Slightly wider aspect ratio
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
         ),
@@ -289,17 +299,16 @@ class HomeScreen extends StatelessWidget {
           return TopicCard(
             emoji: topics[index]['emoji']!,
             name: topics[index]['name']!,
-            imagePath: topics[index]['image']!,
             onTap: () {
               if (topics[index]['name'] == 'ফসলের জাত') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => CropListPage()),
                 );
-              } else if (topics[index]['name'] == 'ফসলের পোকামাকড়') {
+              } else if (topics[index]['name'] == 'খনিজ') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CropListPage2()),
+                  MaterialPageRoute(builder: (context) => ElementsPage()),
                 );
               } else if (topics[index]['name'] == 'যাকাত') {
                 Navigator.push(
@@ -339,7 +348,7 @@ class HomeScreen extends StatelessWidget {
               } else if (topics[index]['name'] == 'ফসল ') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyAppgrid()),
+                  MaterialPageRoute(builder: (context) => MyAppadd()),
                 );
               } else if (topics[index]['name'] == 'news') {
                 Navigator.push(
@@ -358,6 +367,63 @@ class HomeScreen extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class TopicCard extends StatelessWidget {
+  final String emoji;
+  final String name;
+  final Function onTap;
+
+  const TopicCard({
+    required this.emoji,
+    required this.name,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+              50), // Full circle by setting high border radius
+        ),
+        elevation: 4, // Reduced elevation for a subtle shadow
+        color: const Color.fromARGB(
+            255, 157, 193, 171), // Light background for the card
+        child: Container(
+          width: 100, // Set the width of the container to a fixed size
+          height: 100, // Set the height of the container to match the width
+          padding:
+              const EdgeInsets.all(12.0), // Reduced padding for compact design
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                emoji,
+                style: TextStyle(
+                    fontSize:
+                        24), // Slightly larger emoji for better visibility
+              ),
+              SizedBox(height: 4), // Small gap between emoji and name
+              Text(
+                name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18, // Small font size for the name
+                  fontWeight: FontWeight.bold,
+                  color:
+                      const Color.fromARGB(255, 6, 51, 5), // Subtle text color
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

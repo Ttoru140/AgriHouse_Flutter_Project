@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:testimn/firebase_options.dart';
 
 void main() async {
@@ -44,14 +45,63 @@ class _ProductFormState extends State<ProductForm> {
   final TextEditingController _detailsController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _imageUrlController = TextEditingController();
+  bool _isActive = false;
+  bool _isLoading = true;
+
+  String? _selectedCategory = 'Fosol'; // Default category
+
+  // Category options
+  final List<String> _categories = ['Fosol', 'Fruit', 'Sobji'];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserStatus();
+  }
+
+  Future<void> _checkUserStatus() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users') // Replace with your user collection name
+          .doc(user.uid)
+          .get();
+
+      if (userDoc.exists && userDoc['isActive'] == true) {
+        setState(() {
+          _isActive = true;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isActive = false;
+          _isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        _isActive = false;
+        _isLoading = false;
+      });
+    }
+  }
 
   Future<void> _saveProduct() async {
     if (_isFormValid()) {
-      await _addProductToFirestore(_imageUrlController.text);
-      _showSnackBar('Product added successfully!');
-      _clearForm();
+      await FirebaseFirestore.instance.collection('product').add({
+        'name': _nameController.text,
+        'details': _detailsController.text,
+        'price': double.tryParse(_priceController.text) ?? 0,
+        'image': _imageUrlController.text,
+        'category': _selectedCategory, // Use selected category
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Product added successfully!')));
+      Navigator.pop(context);
     } else {
-      _showSnackBar('Please fill all fields');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please fill all fields')));
     }
   }
 
@@ -59,33 +109,36 @@ class _ProductFormState extends State<ProductForm> {
     return _nameController.text.isNotEmpty &&
         _detailsController.text.isNotEmpty &&
         _priceController.text.isNotEmpty &&
-        _imageUrlController.text.isNotEmpty;
-  }
-
-  Future<void> _addProductToFirestore(String imageUrl) async {
-    await FirebaseFirestore.instance.collection('product').add({
-      'name': _nameController.text,
-      'details': _detailsController.text,
-      'price': double.tryParse(_priceController.text) ?? 0,
-      'image': imageUrl,
-    });
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
-  void _clearForm() {
-    _nameController.clear();
-    _detailsController.clear();
-    _priceController.clear();
-    _imageUrlController.clear();
+        _imageUrlController.text.isNotEmpty &&
+        _selectedCategory != null;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Add Product'),
+        ),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (!_isActive) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Access Denied'),
+        ),
+        body: Center(
+          child: Text(
+            'Permission Denied. You do not have access to this page.',
+            style: TextStyle(fontSize: 18, color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Product'),
@@ -114,6 +167,8 @@ class _ProductFormState extends State<ProductForm> {
               const SizedBox(height: 16),
               _buildTextField(
                   _imageUrlController, 'Image URL', TextInputType.url),
+              const SizedBox(height: 16),
+              _buildCategoryDropdown(), // Category dropdown
               const SizedBox(height: 20),
               _buildSaveButton(),
             ],
@@ -138,12 +193,35 @@ class _ProductFormState extends State<ProductForm> {
     );
   }
 
+  // Category dropdown
+  Widget _buildCategoryDropdown() {
+    return DropdownButtonFormField<String>(
+      value: _selectedCategory,
+      onChanged: (value) {
+        setState(() {
+          _selectedCategory = value;
+        });
+      },
+      decoration: InputDecoration(
+        labelText: 'Category',
+        fillColor: Colors.white,
+        filled: true,
+      ),
+      items: _categories.map((category) {
+        return DropdownMenuItem<String>(
+          value: category,
+          child: Text(category),
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildSaveButton() {
     return Center(
       child: ElevatedButton(
         onPressed: _saveProduct,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green, // Background color
+          backgroundColor: Colors.green,
           padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           textStyle: TextStyle(fontSize: 18),
         ),

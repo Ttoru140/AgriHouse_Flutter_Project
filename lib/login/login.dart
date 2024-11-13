@@ -13,10 +13,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp3());
+  runApp(MyApplog());
 }
 
-class MyApp3 extends StatelessWidget {
+class MyApplog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

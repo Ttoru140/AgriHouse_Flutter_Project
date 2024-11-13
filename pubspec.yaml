@@ -56,6 +56,7 @@ dependencies:
   firebase_storage: ^12.3.4
   google_sign_in: ^6.2.1
   shared_preferences: ^2.3.2
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -116,6 +117,7 @@ flutter:
     - assets/image/zakat.jpg
     - assets/image/arif.jpg
     - assets/sobjiCash.json
+    # - assets/data.json
 
     
 

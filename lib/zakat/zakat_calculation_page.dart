@@ -177,7 +177,7 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
               GridView.count(
                 crossAxisCount: screenWidth < 400 ? 3 : 4,
                 shrinkWrap: true,
-                childAspectRatio: 1,
+                childAspectRatio: 1.6,
                 padding: const EdgeInsets.all(8),
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
@@ -198,6 +198,7 @@ class _ZakatCalculationPageState extends State<ZakatCalculationPage> {
                   _buildCalculatorButton('*'),
                   _buildCalculatorButton('-'),
                   _buildCalculatorButton('C'),
+                  _buildCalculatorButton('00'),
                   _buildCalculatorButton('='),
                 ],
               ),
