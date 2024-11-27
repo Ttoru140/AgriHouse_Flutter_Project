@@ -5,6 +5,7 @@ import 'package:testimn/UserControl/main.dart';
 import 'package:testimn/benefits/upokar.dart';
 import 'package:testimn/bmi_calculation/bmi.dart';
 import 'package:testimn/Starting/creator.dart';
+import 'package:testimn/animate.dart';
 import 'package:testimn/fosolerJat/jat.dart';
 import 'package:testimn/newProduct/main.dart';
 // import 'package:testimn/s_additional/branch.dart';
@@ -24,6 +25,7 @@ import 'package:testimn/Starting/profile.dart';
 import 'package:testimn/s_additional/privacy.dart';
 import 'package:testimn/purefood/main.dart';
 import 'package:testimn/sobjiCash/sobjiCash.dart';
+import 'package:testimn/weather/main.dart';
 import 'package:testimn/zakat/zakat_info_page.dart';
 import 'instruction_page.dart'; // Adjust the import path as needed
 
@@ -286,87 +288,109 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.8, // Slightly wider aspect ratio
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-        ),
-        itemCount: topics.length,
-        itemBuilder: (context, index) {
-          return TopicCard(
-            emoji: topics[index]['emoji']!,
-            name: topics[index]['name']!,
-            onTap: () {
-              if (topics[index]['name'] == 'ফসলের জাত') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CropListPage()),
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          // Add a white 400x400 block at the top
+          Container(
+            width: 400,
+            height: 250,
+            child: AnimatedImagePage(),
+          ),
+          // After the block, the grid with the list of topics
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8, // Slightly wider aspect ratio
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: topics.length,
+              itemBuilder: (context, index) {
+                return TopicCard(
+                  emoji: topics[index]['emoji']!,
+                  name: topics[index]['name']!,
+                  onTap: () {
+                    if (topics[index]['name'] == 'ফসলের জাত') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CropListPage()),
+                      );
+                    } else if (topics[index]['name'] == 'খনিজ') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ElementsPage()),
+                      );
+                    } else if (topics[index]['name'] == 'যাকাত') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ZakatInfoPage()),
+                      );
+                    } else if (topics[index]['name'] == 'পণ্য ও প্রযুক্তি') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen2()),
+                      );
+                    } else if (topics[index]['name'] == 'উপকারিতা') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage3()),
+                      );
+                    } else if (topics[index]['name'] == 'BMI') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BMICalculator()),
+                      );
+                    } else if (topics[index]['name'] == 'ফসলের রোগ') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CropListPage4()),
+                      );
+                    } else if (topics[index]['name'] == 'ছত্রাক নাশক') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FungicidesApp()),
+                      );
+                    } else if (topics[index]['name'] == 'সবজি চাষ') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SobjiCashApp()),
+                      );
+                    } else if (topics[index]['name'] == 'ফসল ') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyAppadd()),
+                      );
+                    } else if (topics[index]['name'] == 'news') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyAppnews()),
+                      );
+                    } else if (topics[index]['name'] == 'Weather') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WeatherApp()),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TopicDetailPage(
+                              topicName: topics[index]['name']!),
+                        ),
+                      );
+                    }
+                  },
                 );
-              } else if (topics[index]['name'] == 'খনিজ') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ElementsPage()),
-                );
-              } else if (topics[index]['name'] == 'যাকাত') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ZakatInfoPage()),
-                );
-              } else if (topics[index]['name'] == 'পণ্য ও প্রযুক্তি') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen2()),
-                );
-              } else if (topics[index]['name'] == 'উপকারিতা') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage3()),
-                );
-              } else if (topics[index]['name'] == 'BMI') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BMICalculator()),
-                );
-              } else if (topics[index]['name'] == 'ফসলের রোগ') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CropListPage4()),
-                );
-              } else if (topics[index]['name'] == 'ছত্রাক নাশক') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FungicidesApp()),
-                );
-              } else if (topics[index]['name'] == 'সবজি চাষ') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SobjiCashApp()),
-                );
-              } else if (topics[index]['name'] == 'ফসল ') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyAppadd()),
-                );
-              } else if (topics[index]['name'] == 'news') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyAppnews()),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        TopicDetailPage(topicName: topics[index]['name']!),
-                  ),
-                );
-              }
-            },
-          );
-        },
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

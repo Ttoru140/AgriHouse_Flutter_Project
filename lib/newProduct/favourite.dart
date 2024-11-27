@@ -14,7 +14,7 @@ class Favourite extends StatelessWidget {
         backgroundColor: Colors.green,
       ),
       body: cart.isEmpty
-          ? Center(child: Text('Your cart is empty'))
+          ? Center(child: Text('Your favourite is empty'))
           : ListView.builder(
               itemCount: cart.length,
               itemBuilder: (context, index) {

@@ -85,7 +85,7 @@ class CreatorPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              'A brief biography about yourself goes here. You can mention your background, interests, and what motivated you to create this app.',
+              'A brief biography about myself goes here. I am from Rajshahi University. I like eating ruti with beaf. Sometimes I read islamic book whenever i have time',
               style:
                   TextStyle(fontSize: 16.0, height: 1.5, color: Colors.black54),
             ),
@@ -117,11 +117,10 @@ class CreatorPage extends StatelessWidget {
             _buildContactRow(FontAwesomeIcons.facebook, 'Facebook',
                 'https://www.facebook.com/yourprofile'),
             _buildContactRow(FontAwesomeIcons.github, 'GitHub',
-                'https://github.com/yourprofile'),
+                'https://github.com/Ttoru140'),
             _buildContactRow(FontAwesomeIcons.twitter, 'Twitter',
                 'https://twitter.com/yourtwitterhandle'),
-            _buildContactRow(
-                Icons.email, 'Email', 'mailto:yourname@example.com'),
+            _buildContactRow(Icons.email, 'Email', 'arifikbal140@gmail.com'),
           ],
         ),
       ),

@@ -224,8 +224,9 @@ class _PostPageState extends State<PostPage> {
                                       ],
                                     ),
                                     IconButton(
-                                      icon:
-                                          Icon(Icons.delete, color: Colors.red),
+                                      icon: Icon(Icons.delete,
+                                          color: const Color.fromARGB(
+                                              255, 180, 128, 124)),
                                       onPressed: () => _confirmDeletePost(post),
                                     ),
                                   ],
